@@ -7,23 +7,38 @@
     <style>
       body {
         font-family: sans-serif;
-        background: #fff0f5;
+        background-color: oklch(98.484% 0.02515 145.588);
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: fixed;
         text-align: center;
         padding: 30px;
       }
+
       .box {
-        background: white;
+        background-image: url("Photo/photo03.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
         padding: 20px;
         border-radius: 10px;
-        max-width: 400px;
+        max-width: 300px;
+        height: 500px;
         margin: auto;
       }
+
       input {
         width: 80%;
         padding: 10px;
-        margin: 10px 0;
+        margin-top: 260px;
+        margin-bottom: 10px;
+        border: none;
+        border-radius: 5px;
         font-size: 16px;
       }
+
       button {
         padding: 10px 20px;
         background: #ff6699;
@@ -31,15 +46,34 @@
         border: none;
         border-radius: 5px;
         font-size: 16px;
+        cursor: pointer;
       }
+
       button:active {
         background: #ff3366;
       }
+
       #feedback {
-        min-height: 24px;
-        margin-top: 10px;
+        display: block;
+        width: fit-content; /* ширина = ширине текста */
+        margin: 10px auto 0;
+
         font-weight: bold;
+        font-size: 16px;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+
+        background: rgba(0, 0, 0, 0.35); /* тёмный фон для читаемости */
+        backdrop-filter: blur(3px); /* лёгкое размытие фона */
+        -webkit-backdrop-filter: blur(3px);
+        border-radius: 8px;
+        padding: 6px 10px;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); /* чёткая тень */
       }
+      #feedback.show {
+        opacity: 1;
+      }
+
       #popup {
         display: none;
         margin-top: 20px;
@@ -48,40 +82,63 @@
         border-radius: 10px;
         font-size: 18px;
       }
+
+      #question {
+        color: white;
+      }
     </style>
   </head>
   <body>
     <div class="box">
-      <h2 id="question">Вопрос 1: Как зовут нашего кота?</h2>
+      <h2 id="question">Вопрос 1: Марка мотоцикла мужа?</h2>
       <input type="text" id="answer" placeholder="Твой ответ" />
       <br />
       <button id="answerBtn" type="button">Ответить</button>
       <p id="feedback"></p>
       <div id="popup">
-        🎉 Поздравляю! 🎉<br />
-        Подарок тебя ждёт в шкафу под пальто 😉
+        🎉 Поздравляем! 🎉<br />
+        Подарок тебя ждёт в холодильнике 😉
       </div>
     </div>
 
     <script>
       const questions = [
-        { q: "Как зовут нашего кота?", a: "мурзик" },
-        { q: "Где мы познакомились?", a: "кафе" },
-        { q: "Какое у меня любимое блюдо?", a: "пицца" },
+        { q: "Марка мотоцикла мужа?", a: "Honda", img: "Photo/photo03.jpg" },
+
+        {
+          q: "На какой улице родился Артём?",
+          a: "Предславинская",
+          img: "Photo/photo06.jpg",
+        },
+        {
+          q: "На каком топливе работает наш генератор?",
+          a: "Газ",
+          img: "Photo/photo09.jpg",
+        },
       ];
 
       let current = 0;
 
+      function showFeedback(text, color) {
+        const feedback = document.getElementById("feedback");
+        feedback.textContent = text;
+        feedback.style.color = color;
+        feedback.classList.add("show");
+
+        clearTimeout(feedback.timeout);
+        feedback.timeout = setTimeout(() => {
+          feedback.classList.remove("show");
+          setTimeout(() => (feedback.textContent = ""), 500); // после исчезновения
+        }, 3000);
+      }
+
       function checkAnswer() {
         const input = document.getElementById("answer");
-        const feedback = document.getElementById("feedback");
         const answer = input.value.trim().toLowerCase();
-
         if (!answer) return;
 
-        if (answer === questions[current].a) {
-          feedback.textContent = "Верно!";
-          feedback.style.color = "green";
+        if (answer === questions[current].a.toLowerCase()) {
+          showFeedback("Умничка, мама-кошка!", "green");
           current++;
           if (current < questions.length) {
             setTimeout(() => {
@@ -89,18 +146,19 @@
                 current + 1
               }: ${questions[current].q}`;
               input.value = "";
-              feedback.textContent = "";
               input.focus({ preventScroll: true });
+
+              document.querySelector(
+                ".box"
+              ).style.backgroundImage = `url(${questions[current].img})`;
             }, 400);
           } else {
             document.getElementById("popup").style.display = "block";
             document.getElementById("answerBtn").disabled = true;
             input.disabled = true;
-            feedback.textContent = "";
           }
         } else {
-          feedback.textContent = "Не совсем. Попробуй ещё!";
-          feedback.style.color = "red";
+          showFeedback("Неть. Попробуй ещё!", "yellow");
         }
       }
 
