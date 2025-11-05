@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Квест для моей любимой 💖</title>
+    <style>
+      body {
+        font-family: "Nunito", "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #ffe6eb, #ffd6e0);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+        overflow: hidden;
+      }
+
+      .question-box {
+        background: #fff;
+        padding: 25px 20px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        max-width: 90%;
+        width: 400px;
+        opacity: 0;
+        transform: translateY(30px);
+        animation: fadeIn 0.6s ease forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h2 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      input {
+        width: 90%;
+        padding: 12px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        outline: none;
+        text-align: center;
+        transition: 0.2s;
+      }
+
+      input:focus {
+        border-color: #ff6699;
+        box-shadow: 0 0 5px rgba(255, 102, 153, 0.5);
+      }
+
+      button {
+        margin-top: 15px;
+        padding: 12px 25px;
+        font-size: 1rem;
+        background: #ff6699;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 100%;
+        max-width: 250px;
+        transition: background 0.3s;
+      }
+
+      button:hover {
+        background: #ff3377;
+      }
+
+      #feedback {
+        margin-top: 10px;
+        font-size: 1rem;
+        color: #333;
+        min-height: 24px;
+      }
+
+      .final {
+        text-align: center;
+        color: #333;
+        padding: 20px;
+        animation: fadeIn 1s ease forwards;
+      }
+
+      .final h1 {
+        font-size: 1.8rem;
+        color: #ff4d88;
+        animation: pulse 2s infinite;
+      }
+
+      .final p {
+        font-size: 1.1rem;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      /* Летающие сердечки 💕 */
+      .heart {
+        position: fixed;
+        color: #ff4d88;
+        font-size: 20px;
+        animation: floatUp 2s linear forwards;
+        pointer-events: none;
+        z-index: 999;
+      }
+
+      @keyframes floatUp {
+        0% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-100px) scale(1.5);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="question-box" id="quiz">
+      <h2 id="question">Вопрос 1: Как зовут нашего кота? 🐱</h2>
+      <input type="text" id="answer" placeholder="Твой ответ" />
+      <button id="answerBtn">Ответить</button>
+      <p id="feedback"></p>
+    </div>
+
+    <script>
+      const questions = [
+        { q: "Как зовут нашего кота?", a: "мурзик" },
+        { q: "Где мы познакомились?", a: "кафе" },
+        { q: "Какое у меня любимое блюдо?", a: "пицца" },
+      ];
+
+      let current = 0;
+
+      function checkAnswer() {
+        const answerInput = document.getElementById("answer");
+        const userAnswer = answerInput.value.trim().toLowerCase();
+        const feedback = document.getElementById("feedback");
+
+        if (userAnswer === questions[current].a) {
+          feedback.textContent = "Верно! ❤️";
+          feedback.style.color = "#28a745";
+          spawnHearts(); // 💓 создаём анимацию сердечек
+          current++;
+
+          if (current < questions.length) {
+            setTimeout(() => {
+              document.getElementById("question").textContent = `Вопрос ${
+                current + 1
+              }: ${questions[current].q}`;
+              answerInput.value = "";
+              feedback.textContent = "";
+              answerInput.focus();
+            }, 1000);
+          } else {
+            setTimeout(() => {
+              document.body.innerHTML = `
+            <div class="final">
+              <h1>🎉 Ура, ты прошла квест! 🎉</h1>
+              <p>Подарок тебя ждёт в <b>шкафу под пальто 😉</b></p>
+              <p>С Днём рождения, моя любимая 💕</p>
+            </div>
+          `;
+            }, 800);
+          }
+        } else {
+          feedback.textContent = "Не совсем 😅 Попробуй ещё!";
+          feedback.style.color = "#ff3333";
+        }
+      }
+
+      function spawnHearts() {
+        for (let i = 0; i < 6; i++) {
+          const heart = document.createElement("div");
+          heart.className = "heart";
+          heart.textContent = "💖";
+          heart.style.left = 50 + Math.random() * 40 - 20 + "%";
+          heart.style.bottom = "10%";
+          heart.style.fontSize = 16 + Math.random() * 10 + "px";
+          document.body.appendChild(heart);
+
+          setTimeout(() => heart.remove(), 2000);
+        }
+      }
+
+      // обработчики
+      document
+        .getElementById("answerBtn")
+        .addEventListener("click", checkAnswer);
+      document.getElementById("answer").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") checkAnswer();
+      });
+    </script>
+  </body>
+</html>
