@@ -3,19 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ValQuest 🎁</title>
+    <title>Квест 💖</title>
     <style>
       body {
         font-family: sans-serif;
-        background: #fff0f5;
         text-align: center;
         padding: 30px;
+        background: #fff0f5;
       }
       .box {
         background: white;
         padding: 20px;
         border-radius: 10px;
-        max-width: 400px;
+        max-width: 350px;
         margin: auto;
       }
       input {
@@ -38,15 +38,6 @@
       #feedback {
         min-height: 24px;
         margin-top: 10px;
-        font-weight: bold;
-      }
-      #popup {
-        display: none;
-        margin-top: 20px;
-        padding: 20px;
-        background: #ffccff;
-        border-radius: 10px;
-        font-size: 18px;
       }
     </style>
   </head>
@@ -57,10 +48,6 @@
       <br />
       <button id="answerBtn" type="button">Ответить</button>
       <p id="feedback"></p>
-      <div id="popup">
-        🎉 Поздравляю! 🎉<br />
-        Подарок тебя ждёт в шкафу под пальто 😉
-      </div>
     </div>
 
     <script>
@@ -76,7 +63,6 @@
         const input = document.getElementById("answer");
         const feedback = document.getElementById("feedback");
         const answer = input.value.trim().toLowerCase();
-
         if (!answer) return;
 
         if (answer === questions[current].a) {
@@ -93,10 +79,10 @@
               input.focus({ preventScroll: true });
             }, 400);
           } else {
-            document.getElementById("popup").style.display = "block";
-            document.getElementById("answerBtn").disabled = true;
-            input.disabled = true;
-            feedback.textContent = "";
+            document.body.innerHTML = `
+        <h1>🎉 Поздравляю! 🎉</h1>
+        <p>Подарок тебя ждёт в шкафу под пальто 😉</p>
+      `;
           }
         } else {
           feedback.textContent = "Не совсем. Попробуй ещё!";
@@ -111,6 +97,7 @@
         if (e.key === "Enter") checkAnswer();
       });
 
+      // автоматически фокусируем поле на загрузке
       window.onload = () => {
         document.getElementById("answer").focus();
       };
